@@ -1,5 +1,5 @@
-# META Open API
+# SK Open API
 
 ## Overview
-This is the META Open API hosted at https://openapi.sk.com.
+This is the SK Open API hosted at https://openapi.sk.com.
 We welcome suggestion the API design.
