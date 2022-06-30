@@ -1,0 +1,303 @@
+---
+openapi: 3.1.0
+info:
+  title: META API
+  version: '1.0'
+servers:
+- url: https://apis.openapi.sk.com/sigmeta
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: header
+      name: appKey
+      x-default: l7xxfec18d4632c14800ba9d453f4eb4a2cf
+security:
+- sec0: []
+paths:
+  "/golf/v1/create_analyzer":
+    post:
+      summary: create_analyzer
+      description: 골프 스윙 영상 내, 준비 자세의 Frame을 추출하기 위해 영상을 업로드 할 수 있는 URL과 Job ID를 반환합니다.
+      operationId: create_analyzer
+      parameters:
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          default: application/json
+      - name: appKey
+        in: header
+        description: <a href="https://openapi.sk.com/mypage/project/" target="_blank">마이페이지>앱</a>에서
+          만든 앱키
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - Type
+              - Action
+              - Swing
+              properties:
+                Type:
+                  type: string
+                  description: 분석 유형
+                  default: Guideline
+                Action:
+                  type: string
+                  description: 분석 활동
+                  default: CreateAnalyzer
+                Swing:
+                  type: string
+                  description: 전면(Full_Front), 후면(Full_Back) 영상 선택
+                  default: Full_Front
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: |-
+                    {
+                      "JobID: 부여된 Job ID": "17303806-ce11-456f-bfd1-aa5c4b1a0871",
+                      "State: Success/Fail": "Success",
+                      "Status: Create/NotCreated/Analyzing/AllDone/Failed": "Created",
+                      "Error: Error 내용": "'Swing'"
+                    }
+              schema:
+                oneOf:
+                - type: object
+                  properties:
+                    'JobID: 부여된 Job ID':
+                      type: string
+                      example: 17303806-ce11-456f-bfd1-aa5c4b1a0871
+                    'State: Success/Fail':
+                      type: string
+                      example: Success
+                    'Status: Create/NotCreated/Analyzing/AllDone/Failed':
+                      type: string
+                      example: Created
+                    'URL: 분석할 영상 파일을 올릴 AWS S3 경로':
+                      type: string
+                      example: https://hivevisionprod-golf-data-ap-northeast-2-40524.s3.amazonaws.com/
+                    'Form: AWS S3 Bucket 정보':
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          example: input/Guideline/Full_Front/2022/4/25/17303806-ce11-456f-bfd1-aa5c4b1a0871.mp4
+                        x-amz-algorithm:
+                          type: string
+                          example: AWS4-HMAC-SHA256
+                        x-amz-credential:
+                          type: string
+                          example: ASIAV4WRSFVPFGADGWDK/20220425/ap-northeast-2/s3/aws4_request
+                        x-amz-date:
+                          type: string
+                          example: 20220425T100823Z
+                        x-amz-security-token:
+                          type: string
+                          example: IQoJb3JpZ2luX2VjENL//////////wEaDmFwLW5vcnRoZWFzdC0yIkYwRAIgZGTSMHkbYAGG/z2QsuVyLfQSiOJlCcCKDHIeftMRLZ8CIA+8cDd8yJWlxMj+PTMBndvg6cUoLx5WY+Y0RNg6KeYyKrMCCIv//////////wEQARoMNDA1MjQwMTYzNjc4IgwSIGrhUddeQxKEojUqhwJ1G8qKhkKt+CPnT3+vJsQ7YXbbCrEOgYMWeuQYopM8yReN4aZMgmq/1YwGE50Mom/4PWO1ezkARhRY65Rd546VzV9TXCKxDeAqn7WlqZPVJ7cHmV1igzycRwuKRaZmHz42I6E78mH38dcc5h0odsIWHjQGwNKg7oTFihCXyNW7ET8TyuCI9g6XaUAcubp6qcht9C8Oe9MzAH3KWrX9EcWJs4RfVgDpfVj6hhi5tQMbRUn7lFbcpzObtlekP16DgfYKCeI2JmILYBTUAD+RMuPYDahJTuMxSPoDYnihgughmIcVPbHIJ8teGhy9mwgsGDHtx/5q0humxxHaNV3vKMMbAPmlZi4WrTCX5pmTBjqbAaAi8omWcXzrEXOt14XfbZCONixOHR+B2zLqOigbZu6w/etPu6Py48A1nRSXsfK+4P4jAHmvafPTLPjfGVV2fznXa3fO9+tE1QFNgzfkOeI60JExm6RRf5O588yfwf+vPsVxoPvrT3ifgAYwru9LeE7WmA7plTOcL9mv7RIcgSxM4NgQk1uuax5rlLR88deLujKeoZrKfDAKSu6g
+                        policy:
+                          type: string
+                          example: eyJleHBpcmF0aW9uIjogIjIwMjItMDQtMjVUMTA6MTA6MjNaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAiaGl2ZXZpc2lvbnByb2QtZ29sZi1kYXRhLWFwLW5vcnRoZWFzdC0yLTQwNTI0In0sIHsia2V5IjogImlucHV0L0d1aWRlbGluZS9GdWxsX0Zyb250LzIwMjIvNC8yNS8xNzMwMzgwNi1jZTExLTQ1NmYtYmZkMS1hYTVjNGIxYTA4NzEubXA0In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogIkFTSUFWNFdSU0ZWUEZHQURHV0RLLzIwMjIwNDI1L2FwLW5vcnRoZWFzdC0yL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWRhdGUiOiAiMjAyMjA0MjVUMTAwODIzWiJ9LCB7IngtYW16LXNlY3VyaXR5LXRva2VuIjogIklRb0piM0pwWjJsdVgyVmpFTkwvLy8vLy8vLy8vd0VhRG1Gd0xXNXZjblJvWldGemRDMHlJa1l3UkFJZ1pHVFNNSGtiWUFHRy96MlFzdVZ5TGZRU2lPSmxDY0NLREhJZWZ0TVJMWjhDSUErOGNEZDh5SldseE1qK1BUTUJuZHZnNmNVb0x4NVdZK1kwUk5nNktlWXlLck1DQ0l2Ly8vLy8vLy8vL3dFUUFSb01OREExTWpRd01UWXpOamM0SWd3U0lHcmhVZGRlUXhLRW9qVXFod0oxRzhxS2hrS3QrQ1BuVDMrdkpzUTdZWGJiQ3JFT2dZTVdldVFZb3BNOHlSZU40YVpNZ21xLzFZd0dFNTBNb20vNFBXTzFlemtBUmhSWTY1UmQ1NDZWelY5VFhDS3hEZUFxbjdXbHFaUFZKN2NIbVYxaWd6eWNSd3VLUmFabUh6NDJJNkU3OG1IMzhkY2M1aDBvZHNJV0hqUUd3TktnN29URmloQ1h5Tlc3RVQ4VHl1Q0k5ZzZYYVVBY3VicDZxY2h0OUM4T2U5TXpBSDNLV3JYOUVjV0pzNFJmVmdEcGZWajZoaGk1dFFNYlJVbjdsRmJjcHpPYnRsZWtQMTZEZ2ZZS0NlSTJKbUlMWUJUVUFEK1JNdVBZRGFoSlR1TXhTUG9EWW5paGd1Z2htSWNWUGJISUo4dGVHaHk5bXdnc0dESHR4LzVxMGh1bXh4SGFOVjN2S01NYkFQbWxaaTRXclRDWDVwbVRCanFiQWFBaThvbVdjWHpyRVhPdDE0WGZiWkNPTml4T0hSK0IyekxxT2lnYlp1NncvZXRQdTZQeTQ4QTFuUlNYc2ZLKzRQNGpBSG12YWZQVExQamZHVlYyZnpuWGEzZk85K3RFMVFGTmd6ZmtPZUk2MEpFeG02UlJmNU81ODh5ZndmK3ZQc1Z4b1B2clQzaWZnQVl3cnU5TGVFN1dtQTdwbFRPY0w5bXY3UkljZ1N4TTROZ1FrMXV1YXg1cmxMUjg4ZGVMdWpLZW9acktmREFLU3U2ZyJ9XX0=
+                        x-amz-signature:
+                          type: string
+                          example: 898c9741ae08585e8d36e475765dea2bc2d0843b6fc184e753a77b1f2f546893
+                - type: object
+                  properties:
+                    'JobID: 부여된 Job ID':
+                      type: string
+                      example: 17303806-ce11-456f-bfd1-aa5c4b1a0871
+                    'State: Success/Fail':
+                      type: string
+                      example: Success
+                    'Status: Create/NotCreated/Analyzing/AllDone/Failed':
+                      type: string
+                      example: Created
+                    'Error: Error 내용':
+                      type: string
+                      example: "'Swing'"
+      deprecated: false
+  "/vaiaas/lpr/v1/":
+    post:
+      summary: lpr
+      description: 차량의 번호판을 인식하여 번호판 좌표 및 차량번호를 JSON 객체로 반환합니다.
+      operationId: lpr
+      parameters:
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          default: multipart/form-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                File:
+                  type: string
+                  format: binary
+                appKey:
+                  type: string
+                  description: 마이페이지>앱에서 만든 앱키
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{}"
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{}"
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+  "/golf/v1/get_result/{JobID}":
+    get:
+      summary: get_result
+      description: 분석된 결과물을 JSON 객체로 반환합니다.
+      operationId: get_result
+      parameters:
+      - name: JobID
+        in: path
+        description: create_analyzer에서 응답 받은 해당 분석의 Job ID
+        required: true
+        schema:
+          type: string
+      - name: appKey
+        in: header
+        description: <a href="https://openapi.sk.com/mypage/project/" target="_blank">마이페이지>앱</a>에서
+          만든 앱키
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: |-
+                    {
+                      "JobID: 요청한 Job ID": "17303806-ce11-456f-bfd1-aa5c4b1a0871",
+                      "State: Success/Fail": "Fail",
+                      "Status: Create/NotCreated/Analyzing/AllDone/Failed": "NotCreated",
+                      "address_frame_num: 추출된 스윙 준비 자세 Frame Number": 10,
+                      "Joints: 25개의 관절 좌표, 추출되지 않았을 경우 -1 로 반환, [nose, neck, right shoulder, right elbow, right wrist, left shoulder, left elbow, left wrist, pelvis, right hip, right knee, right ankle, left hip, left knee, left ankle, right eye, left eye, right ear, left ear, left big toe, left small toe, left heel, right big toe, right small toe, right heel]": [1.2, 2.2, 3.2],
+                      "Guideline: Front 의 Guideline 생성을 위한 Joints 외 10개의 좌표, [body_line_left_bottom_point, body_line_left_top_point, body_line_right_bottom_point, body_line_right_top_point, head_center, head_circle_radius, hip_ankle_line_leftbottom_point, hip_ankle_line_lefttop_point, hip_ankle_line_rightbottom_point, hip_ankle_line_righttop_point, shoulder_line_left_point, shoulder_line_right_point]": [1.2, 2.2, 3.2],
+                      "url: Meta가 저장되어 있는 URL": "http://meta",
+                      "Error: Error 내용": "'Swing'"
+                    }
+              schema:
+                type: object
+                properties:
+                  'JobID: 요청한 Job ID':
+                    type: string
+                    example: 17303806-ce11-456f-bfd1-aa5c4b1a0871
+                  'State: Success/Fail':
+                    type: string
+                    example: Fail
+                  'Status: Create/NotCreated/Analyzing/AllDone/Failed':
+                    type: string
+                    example: NotCreated
+                  'address_frame_num: 추출된 스윙 준비 자세 Frame Number':
+                    type: integer
+                    example: 10
+                    default: 0
+                  ? 'Joints: 25개의 관절 좌표, 추출되지 않았을 경우 -1 로 반환, [nose, neck, right shoulder,
+                    right elbow, right wrist, left shoulder, left elbow, left wrist,
+                    pelvis, right hip, right knee, right ankle, left hip, left knee,
+                    left ankle, right eye, left eye, right ear, left ear, left big
+                    toe, left small toe, left heel, right big toe, right small toe,
+                    right heel]'
+                  : type: array
+                    items:
+                      type: number
+                      example: 1.2
+                      default: 0
+                  ? 'Guideline: Front 의 Guideline 생성을 위한 Joints 외 10개의 좌표, [body_line_left_bottom_point,
+                    body_line_left_top_point, body_line_right_bottom_point, body_line_right_top_point,
+                    head_center, head_circle_radius, hip_ankle_line_leftbottom_point,
+                    hip_ankle_line_lefttop_point, hip_ankle_line_rightbottom_point,
+                    hip_ankle_line_righttop_point, shoulder_line_left_point, shoulder_line_right_point]'
+                  : type: array
+                    items:
+                      type: number
+                      example: 1.2
+                      default: 0
+                  'url: Meta가 저장되어 있는 URL':
+                    type: string
+                    example: http://meta
+                  'Error: Error 내용':
+                    type: string
+                    example: "'Swing'"
+      deprecated: false
+  "/golf/v1/e2e":
+    post:
+      summary: e2e
+      description: 3MB 이하의 영상, 이미지의 업로드와 분석을 한번에 처리하여 JSON 객체로 반환합니다.
+      operationId: e2e
+      parameters:
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          default: multipart/form-data
+      - name: appKey
+        in: header
+        description: <a href="https://openapi.sk.com/mypage/project/" target="_blank">마이페이지>앱</a>에서
+          만든 앱키
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - Type
+              - Swing
+              - File
+              properties:
+                Type:
+                  type: string
+                  description: 분석 유형
+                  default: Guideline
+                Swing:
+                  type: string
+                  description: 전면(Full_Front), 후면(Full_Back) 영상 선택
+                  default: Full_Front
+                File:
+                  type: string
+                  description: '동영상 파일(*.mp4, 지원 Codec : H.264, MPEG), 이미지 파일(*.jpg,
+                    *.png, *.bmp)'
+                  format: binary
+      deprecated: false
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+x-readme-fauxas: true
