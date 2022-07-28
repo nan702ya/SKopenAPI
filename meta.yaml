@@ -46,7 +46,7 @@ paths:
               properties:
                 Type:
                   type: string
-                  description: 분석 유형
+                  description: 분석 유형111
                   default: Guideline
                 Action:
                   type: string
